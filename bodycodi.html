@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bodycodi – Teamhoot Portfolio</title>
+<meta name="description" content="Bodycodi: 피트니스 센터를 위한 올인원 멤버십 & 예약 앱">
+<style>
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+:root{
+  --black:#080808;
+  --dark:#0f0f0f;
+  --card:#111111;
+  --card2:#161616;
+  --divider:#1e1e1e;
+  --white:#ffffff;
+  --gray1:#aaaaaa;
+  --gray2:#666666;
+  --gray3:#333333;
+  --accent:#407bf3;
+  --accent2:#3d73df;
+  --proj:#5b9cf6;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-snap-type:y mandatory;overflow-y:scroll}
+body{
+  background:var(--black);
+  color:var(--white);
+  font-family:'Pretendard',sans-serif;
+  overscroll-behavior:none;
+}
+
+/* ── HEADER ── */
+.hdr{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 40px;height:52px;
+  background:rgba(8,8,8,.85);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--divider);
+}
+.hdr-left{display:flex;align-items:center;gap:16px}
+.hdr-back{
+  display:flex;align-items:center;gap:8px;
+  color:var(--gray1);font-size:12px;font-weight:600;letter-spacing:.04em;
+  text-decoration:none;transition:color .2s;
+}
+.hdr-back:hover{color:var(--white)}
+.hdr-back svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2}
+.hdr-sep{width:1px;height:16px;background:var(--divider)}
+.hdr-num{font-size:16px;font-weight:800;letter-spacing:1px;color:var(--white)}
+.hdr-title{font-size:13px;font-weight:700;letter-spacing:1px;color:var(--white)}
+.hdr-sub{font-size:11px;color:var(--gray1);letter-spacing:.04em}
+.hdr-brand{text-align:right}
+.hdr-brand span{display:block;font-size:12px;font-weight:800;letter-spacing:1px;color:var(--white)}
+
+/* ── NAV DOTS ── */
+.nav-dots{
+  position:fixed;right:24px;top:50%;transform:translateY(-50%);
+  display:flex;flex-direction:column;gap:10px;z-index:100;
+}
+.ndot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--gray2);cursor:pointer;
+  transition:all .3s;border:none;padding:0;
+}
+.ndot.active{background:var(--proj);transform:scale(1.5)}
+.ndot:hover{background:var(--white)}
+
+/* ── SECTIONS ── */
+section{
+  scroll-snap-align:start;
+  min-height:100vh;
+  padding:80px 80px 60px;
+  display:flex;flex-direction:column;justify-content:center;
+  position:relative;overflow:hidden;
+}
+.sec-dark{background:var(--dark)}
+.sec-black{background:var(--black)}
+.sec-card{background:#0c0c0c}
+
+/* ── BG ABSTRACT ── */
+.bg-abstract{
+  position:absolute;inset:0;pointer-events:none;z-index:0;overflow:hidden;
+}
+.bg-abstract::before{
+  content:'';position:absolute;
+  width:600px;height:600px;border-radius:50%;
+  background:radial-gradient(circle,rgba(64,123,243,.06) 0%,transparent 70%);
+  top:-100px;right:-100px;
+}
+.bg-abstract::after{
+  content:'';position:absolute;
+  width:400px;height:400px;border-radius:50%;
+  background:radial-gradient(circle,rgba(91,156,246,.04) 0%,transparent 70%);
+  bottom:-80px;left:10%;
+}
+
+/* ── PAGE COUNTER ── */
+.page-counter{
+  position:absolute;bottom:28px;right:40px;
+  font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--gray2);
+}
+
+/* ── SEC LABEL ── */
+.sec-label{
+  display:flex;align-items:baseline;gap:20px;
+  margin-bottom:44px;
+  padding-bottom:20px;
+  border-bottom:1px solid var(--divider);
+  position:relative;z-index:2;
+}
+.sec-num{font-size:48px;font-weight:900;color:var(--divider);line-height:1;letter-spacing:1px}
+.sec-title{font-size:clamp(20px,2vw,28px);font-weight:800;letter-spacing:2px;color:var(--white)}
+.sec-title-sub{font-size:12px;color:var(--gray1);letter-spacing:.04em;margin-top:4px}
+
+/* ── PROJ HEADER ── */
+.proj-hdr{
+  display:flex;align-items:baseline;gap:16px;
+  margin-bottom:10px;padding-bottom:12px;
+  border-bottom:1px solid var(--divider);
+  position:relative;z-index:2;
+}
+.proj-hdr-num{font-size:13px;font-weight:800;letter-spacing:1px;color:var(--white)}
+.proj-hdr-sep{color:var(--gray2);font-size:14px}
+.proj-hdr-cat{font-size:13px;font-weight:800;letter-spacing:1px;color:var(--white)}
+.proj-hdr-name{font-size:12px;color:var(--gray1);letter-spacing:.04em}
+
+/* ── SECTION 1 LAYOUT ── */
+.s1-layout{
+  display:grid;
+  grid-template-columns:1fr 420px;
+  gap:60px;align-items:center;
+  position:relative;z-index:2;
+  margin-top:32px;
+}
+.proj-title{
+  font-size:clamp(22px,2.4vw,34px);font-weight:700;
+  color:var(--white);margin-bottom:16px;line-height:1.3;letter-spacing:1px;
+}
+.proj-title em{font-style:normal;color:var(--proj)}
+.proj-body{
+  font-size:14px;color:var(--gray1);line-height:1.85;
+  margin-bottom:28px;font-weight:300;
+}
+.skills-label{font-size:12px;font-weight:700;color:var(--white);margin-bottom:10px;letter-spacing:.04em}
+.skills-divider{height:1px;background:var(--divider);margin-bottom:12px}
+.skills-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px}
+.skill-pill{
+  padding:6px 16px;border:1px solid var(--gray3);
+  font-size:11px;font-weight:700;color:var(--white);letter-spacing:.06em;
+}
+.link-section{margin-bottom:18px}
+.link-label{font-size:11px;font-weight:700;color:var(--gray1);letter-spacing:.06em;margin-bottom:8px}
+.link-divider{height:1px;background:var(--divider);margin-bottom:8px}
+.link-url{font-size:12px;color:var(--proj);text-decoration:none;word-break:break-all;line-height:1.5}
+.link-url:hover{text-decoration:underline}
+
+/* ── PHONE SCREENSHOTS ── */
+.screenshots{
+  display:flex;align-items:flex-end;justify-content:center;
+  gap:-20px;
+  position:relative;height:480px;
+}
+.phone-shot{
+  width:200px;
+  border-radius:24px;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.08);
+  box-shadow:0 24px 60px rgba(0,0,0,.6);
+  position:absolute;
+  background:#111;
+}
+.phone-shot img{width:100%;height:100%;object-fit:cover;display:block}
+.phone-shot-1{left:0;bottom:0;z-index:3;transform:rotate(-4deg)}
+.phone-shot-2{left:50%;transform:translateX(-50%);bottom:20px;z-index:4}
+.phone-shot-3{right:0;bottom:0;z-index:3;transform:rotate(4deg)}
+
+/* screenshot placeholder */
+.shot-placeholder{
+  width:200px;height:360px;
+  border-radius:24px;
+  background:var(--card);
+  border:1px solid var(--divider);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:12px;
+}
+.shot-placeholder .shot-icon{font-size:32px;opacity:.3}
+.shot-placeholder .shot-label{font-size:10px;color:var(--gray2);letter-spacing:.08em}
+
+/* ── SECTION 2 LAYOUT ── */
+.features-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:1px;
+  background:var(--divider);
+  border:1px solid var(--divider);
+  margin-top:40px;
+  position:relative;z-index:2;
+}
+.feat-card{
+  background:var(--card);
+  padding:32px 28px;
+  position:relative;overflow:hidden;
+  transition:background .25s;
+}
+.feat-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:var(--proj);
+  transform:scaleX(0);transform-origin:left;
+  transition:transform .35s;
+}
+.feat-card:hover::before{transform:scaleX(1)}
+.feat-card:hover{background:var(--card2)}
+.feat-num{font-size:11px;font-weight:700;letter-spacing:.15em;color:var(--gray2);margin-bottom:16px}
+.feat-icon{font-size:28px;margin-bottom:14px;line-height:1}
+.feat-title{font-size:13px;font-weight:700;color:var(--white);margin-bottom:10px;letter-spacing:.5px;line-height:1.4}
+.feat-desc{font-size:12px;color:var(--gray2);line-height:1.65}
+
+/* ── SECTION 3 LAYOUT ── */
+.s3-layout{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:60px;align-items:center;
+  position:relative;z-index:2;
+  margin-top:32px;
+}
+.s3-phones{
+  display:flex;gap:16px;align-items:flex-end;justify-content:center;
+}
+.s3-phone{
+  background:var(--card);
+  border:1px solid var(--divider);
+  border-radius:20px;
+  overflow:hidden;
+  box-shadow:0 20px 50px rgba(0,0,0,.5);
+}
+.s3-phone-header{
+  background:#0d1a3a;padding:14px 16px;
+  border-bottom:1px solid #1a3060;
+}
+.s3-phone-tag{font-size:9px;color:var(--proj);letter-spacing:.15em;margin-bottom:6px}
+.s3-phone-title{font-size:13px;font-weight:700;color:var(--white);line-height:1.3}
+.s3-phone-body{padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.s3-item{
+  background:#132050;border-radius:6px;padding:10px 12px;
+  font-size:10px;color:#93bbff;
+}
+
+.next-project{
+  display:flex;align-items:center;gap:12px;
+  margin-top:40px;
+  padding-top:24px;
+  border-top:1px solid var(--divider);
+  text-decoration:none;
+  color:var(--gray1);font-size:13px;
+  transition:color .2s;
+  position:relative;z-index:2;
+}
+.next-project:hover{color:var(--white)}
+.next-project-label{font-size:10px;letter-spacing:.1em;color:var(--gray2);margin-bottom:4px}
+.next-project-name{font-size:16px;font-weight:700;color:var(--white)}
+.next-arrow{
+  margin-left:auto;
+  width:40px;height:40px;border-radius:50%;
+  border:1px solid var(--divider);
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;transition:all .2s;
+}
+.next-project:hover .next-arrow{border-color:var(--proj);color:var(--proj)}
+
+/* ── REVEAL ── */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
+.reveal.visible{opacity:1;transform:none}
+.reveal-delay-1{transition-delay:.1s}
+.reveal-delay-2{transition-delay:.2s}
+.reveal-delay-3{transition-delay:.3s}
+
+/* ── RESPONSIVE ── */
+@media(max-width:960px){
+  section{padding:80px 48px 60px}
+  .s1-layout,.s3-layout{grid-template-columns:1fr;gap:40px}
+  .screenshots{display:none}
+  .features-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:600px){
+  section{padding:72px 24px 48px}
+  .hdr{padding:0 20px}
+  .features-grid{grid-template-columns:1fr}
+  .sec-num{font-size:28px}
+}
+</style>
+</head>
+<body>
+
+<!-- FIXED HEADER -->
+<header class="hdr">
+  <div class="hdr-left">
+    <a class="hdr-back" href="index.html">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      BACK
+    </a>
+    <div class="hdr-sep"></div>
+    <span class="hdr-num">01</span>
+    <div class="hdr-sep"></div>
+    <div>
+      <div class="hdr-title" id="hdr-title">PROJECTS</div>
+      <div class="hdr-sub" id="hdr-sub">Bodycodi – 피트니스 멤버십 관리 솔루션</div>
+    </div>
+  </div>
+  <div class="hdr-brand">
+    <span>TEAMHOOT</span>
+    <span>BUSINESS PORTFOLIO</span>
+  </div>
+</header>
+
+<!-- NAV DOTS -->
+<nav class="nav-dots" aria-label="섹션 이동">
+  <button class="ndot active" data-target="s1" title="프로젝트 개요"></button>
+  <button class="ndot" data-target="s2" title="주요 기능"></button>
+  <button class="ndot" data-target="s3" title="기술 & 다음 프로젝트"></button>
+</nav>
+
+<!-- ══ SECTION 1 — OVERVIEW ══ -->
+<section id="s1" class="sec-dark">
+  <div class="bg-abstract"></div>
+
+  <div class="proj-hdr reveal">
+    <span class="proj-hdr-num">02</span>
+    <span class="proj-hdr-sep">|</span>
+    <span class="proj-hdr-cat">PROJECTS</span>
+    <span class="proj-hdr-name">Bodycodi – 통합 피트니스 멤버십 관리 솔루션</span>
+  </div>
+
+  <div class="s1-layout">
+    <div>
+      <h1 class="proj-title reveal reveal-delay-1">
+        <em>Bodycodi:</em> 피트니스 센터를 위한<br>올인원 멤버십 &amp; 예약 앱
+      </h1>
+      <p class="proj-body reveal reveal-delay-2">
+        멀티센터 멤버십 관리, 스마트 클래스 예약, AI 기반 식단 추적 기능을 갖춘 올인원 디지털 피트니스 플랫폼을 개발했습니다. 헬스 및 웰니스 센터를 위한 사용자 참여와 효율적 운영을 강화했습니다.
+      </p>
+
+      <div class="reveal reveal-delay-2">
+        <div class="skills-label">Skills and deliverables</div>
+        <div class="skills-divider"></div>
+        <div class="skills-row">
+          <span class="skill-pill">Spring Boot</span>
+          <span class="skill-pill">React</span>
+          <span class="skill-pill">MySQL</span>
+        </div>
+      </div>
+
+      <div class="reveal reveal-delay-3">
+        <div class="link-section">
+          <div class="link-label">Demo Video</div>
+          <div class="link-divider"></div>
+          <a class="link-url" href="https://github.com/breadeun/Portpolio/blob/master/Bodycodi.md" target="_blank">
+            https://github.com/breadeun/Portpolio/blob/master/Bodycodi.md
+          </a>
+        </div>
+        <div class="link-section">
+          <div class="link-label">Download Links – Google Play</div>
+          <div class="link-divider"></div>
+          <a class="link-url" href="https://play.google.com/store/apps/details?id=com.bodycodi.bpay&hl=ko&gl=US" target="_blank">
+            https://play.google.com/store/apps/details?id=com.bodycodi.bpay&hl=ko&gl=US
+          </a>
+        </div>
+        <div class="link-section">
+          <div class="link-label">Download Links – App Store</div>
+          <div class="link-divider"></div>
+          <a class="link-url" href="https://apps.apple.com/kr/app/%EB%B0%94%EB%94%94%EC%BD%94%EB%94%94-%EB%A9%A4%EB%B2%84%EC%8A%A4-bodycodi-members/id1557408918" target="_blank">
+            https://apps.apple.com/kr/app/bodycodi-members/id1557408918
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="screenshots reveal reveal-delay-2">
+      <div class="shot-placeholder phone-shot-1">
+        <div class="shot-icon">📱</div>
+        <div class="shot-label">SCREENSHOT 1</div>
+      </div>
+      <div class="shot-placeholder phone-shot-2" style="height:400px">
+        <div class="shot-icon">📱</div>
+        <div class="shot-label">SCREENSHOT 2</div>
+      </div>
+      <div class="shot-placeholder phone-shot-3">
+        <div class="shot-icon">📱</div>
+        <div class="shot-label">SCREENSHOT 3</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-counter">01 / 03</div>
+</section>
+
+<!-- ══ SECTION 2 — FEATURES ══ -->
+<section id="s2" class="sec-black">
+  <div class="bg-abstract"></div>
+
+  <div class="sec-label reveal">
+    <span class="sec-num">02</span>
+    <div>
+      <div class="sec-title">FEATURES</div>
+      <div class="sec-title-sub">Bodycodi 핵심 기능</div>
+    </div>
+  </div>
+
+  <div class="features-grid">
+    <div class="feat-card reveal">
+      <div class="feat-num">01</div>
+      <div class="feat-icon">🏋️</div>
+      <div class="feat-title">멀티센터 멤버십 관리</div>
+      <div class="feat-desc">여러 피트니스 센터를 하나의 앱으로 통합 관리. 센터별 멤버십 상태, 이용 내역, 결제 현황을 한눈에 확인합니다.</div>
+    </div>
+    <div class="feat-card reveal reveal-delay-1">
+      <div class="feat-num">02</div>
+      <div class="feat-icon">📅</div>
+      <div class="feat-title">스마트 클래스 예약</div>
+      <div class="feat-desc">실시간 클래스 예약 및 취소, 대기열 관리, 강사별 스케줄 조회 기능으로 편리한 운동 계획을 지원합니다.</div>
+    </div>
+    <div class="feat-card reveal reveal-delay-2">
+      <div class="feat-num">03</div>
+      <div class="feat-icon">🥗</div>
+      <div class="feat-title">AI 기반 식단 추적</div>
+      <div class="feat-desc">인공지능을 활용한 식단 분석 및 영양소 추적. 개인 맞춤형 식단 추천으로 운동 효과를 극대화합니다.</div>
+    </div>
+    <div class="feat-card reveal reveal-delay-1">
+      <div class="feat-num">04</div>
+      <div class="feat-icon">💳</div>
+      <div class="feat-title">통합 결제 시스템</div>
+      <div class="feat-desc">멤버십 결제, 클래스 단건 결제, 패키지 구매까지 하나의 플랫폼에서 안전하게 처리합니다.</div>
+    </div>
+    <div class="feat-card reveal reveal-delay-2">
+      <div class="feat-num">05</div>
+      <div class="feat-icon">📊</div>
+      <div class="feat-title">운동 기록 & 통계</div>
+      <div class="feat-desc">출석 현황, 운동 강도, 체중 변화 등 개인 운동 데이터를 시각화하여 동기부여를 높입니다.</div>
+    </div>
+    <div class="feat-card reveal reveal-delay-3">
+      <div class="feat-num">06</div>
+      <div class="feat-icon">💬</div>
+      <div class="feat-title">커뮤니티 & 소통</div>
+      <div class="feat-desc">회원 간 운동 인증, 챌린지 참여, 강사와의 피드백 기능으로 지속적인 운동 동기를 유지합니다.</div>
+    </div>
+  </div>
+
+  <div class="page-counter">02 / 03</div>
+</section>
+
+<!-- ══ SECTION 3 — TECH & NEXT ══ -->
+<section id="s3" class="sec-card">
+  <div class="bg-abstract"></div>
+
+  <div class="sec-label reveal">
+    <span class="sec-num">03</span>
+    <div>
+      <div class="sec-title">ARCHITECTURE</div>
+      <div class="sec-title-sub">기술 스택 & 시스템 구조</div>
+    </div>
+  </div>
+
+  <div class="s3-layout">
+    <div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--divider);border:1px solid var(--divider);margin-bottom:32px" class="reveal">
+        <div style="background:var(--card);padding:24px 20px">
+          <div style="font-size:10px;font-weight:700;letter-spacing:.12em;color:var(--gray2);margin-bottom:12px">FRONTEND</div>
+          <div style="font-size:13px;font-weight:600;color:var(--white);margin-bottom:6px">React</div>
+          <div style="font-size:11px;color:var(--gray2)">컴포넌트 기반 UI, 상태관리</div>
+        </div>
+        <div style="background:var(--card);padding:24px 20px">
+          <div style="font-size:10px;font-weight:700;letter-spacing:.12em;color:var(--gray2);margin-bottom:12px">BACKEND</div>
+          <div style="font-size:13px;font-weight:600;color:var(--white);margin-bottom:6px">Spring Boot</div>
+          <div style="font-size:11px;color:var(--gray2)">REST API, 비즈니스 로직</div>
+        </div>
+        <div style="background:var(--card);padding:24px 20px">
+          <div style="font-size:10px;font-weight:700;letter-spacing:.12em;color:var(--gray2);margin-bottom:12px">DATABASE</div>
+          <div style="font-size:13px;font-weight:600;color:var(--white);margin-bottom:6px">MySQL</div>
+          <div style="font-size:11px;color:var(--gray2)">관계형 DB, 트랜잭션 처리</div>
+        </div>
+        <div style="background:var(--card);padding:24px 20px">
+          <div style="font-size:10px;font-weight:700;letter-spacing:.12em;color:var(--gray2);margin-bottom:12px">AI / ML</div>
+          <div style="font-size:13px;font-weight:600;color:var(--white);margin-bottom:6px">식단 분석 엔진</div>
+          <div style="font-size:11px;color:var(--gray2)">영양소 인식, 추천 알고리즘</div>
+        </div>
+      </div>
+
+      <a class="next-project reveal reveal-delay-1" href="index.html#projects-swiper">
+        <div>
+          <div class="next-project-label">NEXT PROJECT</div>
+          <div class="next-project-name">행복한논술 – 학원 관리 플랫폼</div>
+        </div>
+        <div class="next-arrow">→</div>
+      </a>
+    </div>
+
+    <div class="reveal reveal-delay-1">
+      <div class="s3-phone" style="margin-bottom:16px">
+        <div class="s3-phone-header">
+          <div class="s3-phone-tag">MEMBERSHIP</div>
+          <div class="s3-phone-title">멀티센터<br>통합 관리</div>
+        </div>
+        <div class="s3-phone-body">
+          <div class="s3-item">✓ 센터별 멤버십 현황 통합 조회</div>
+          <div class="s3-item">✓ 실시간 출석 체크 & 이용 내역</div>
+          <div class="s3-item">✓ 자동 갱신 & 만료 알림</div>
+        </div>
+      </div>
+      <div class="s3-phone">
+        <div class="s3-phone-header">
+          <div class="s3-phone-tag">RESERVATION</div>
+          <div class="s3-phone-title">스마트<br>클래스 예약</div>
+        </div>
+        <div class="s3-phone-body">
+          <div class="s3-item">✓ 실시간 잔여석 & 대기열 관리</div>
+          <div class="s3-item">✓ 강사별 / 시간대별 필터 예약</div>
+          <div class="s3-item">✓ 1시간 전 자동 리마인더</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-counter">03 / 03</div>
+</section>
+
+<script>
+// Intersection Observer for reveal animations
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible') });
+}, { threshold: 0.12 });
+reveals.forEach(el => observer.observe(el));
+
+// Nav dots
+const sections = ['s1','s2','s3'];
+const dots = document.querySelectorAll('.ndot');
+
+dots.forEach((dot, i) => {
+  dot.addEventListener('click', () => {
+    document.getElementById(sections[i]).scrollIntoView({ behavior:'smooth' });
+  });
+});
+
+const secObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if(e.isIntersecting){
+      const idx = sections.indexOf(e.target.id);
+      dots.forEach(d => d.classList.remove('active'));
+      if(idx >= 0) dots[idx].classList.add('active');
+    }
+  });
+}, { threshold: 0.5 });
+
+sections.forEach(id => {
+  const el = document.getElementById(id);
+  if(el) secObserver.observe(el);
+});
+</script>
+</body>
+</html>
