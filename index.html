@@ -2077,9 +2077,14 @@ dots.forEach(dot=>{
   buildPagination();
   goTo(0);
 
-  // Project card click → scroll to #project section + highlight
+  // Project card click → external page or scroll to #project section
   cards.forEach(card=>{
     card.addEventListener('click', e=>{
+      const href = card.getAttribute('href');
+      if(href && !href.startsWith('#')){
+        window.location.href = href;
+        return;
+      }
       e.preventDefault();
       document.getElementById('project')?.scrollIntoView({behavior:'smooth'});
     });
