@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>이피링크 – Teamhoot Portfolio</title>
+<meta name="description" content="EPlink: 헬스장을 위한 올인원 회원관리 & 자동화 플랫폼">
+<style>
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+:root{
+  --black:#080808;
+  --dark:#0f0f0f;
+  --card:#111111;
+  --card2:#161616;
+  --divider:#1e1e1e;
+  --white:#ffffff;
+  --gray1:#aaaaaa;
+  --gray2:#666666;
+  --gray3:#333333;
+  --accent:#407bf3;
+  --proj:#3dbe8a;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-snap-type:y mandatory;overflow-y:scroll}
+body{
+  background:var(--black);
+  color:var(--white);
+  font-family:'Pretendard',sans-serif;
+  overscroll-behavior:none;
+}
+
+/* ── HEADER ── */
+.hdr{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 40px;height:52px;
+  background:rgba(8,8,8,.85);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--divider);
+}
+.hdr-left{display:flex;align-items:center;gap:16px}
+.hdr-back{
+  display:flex;align-items:center;gap:8px;
+  color:var(--gray1);font-size:12px;font-weight:600;letter-spacing:.04em;
+  text-decoration:none;transition:color .2s;
+}
+.hdr-back:hover{color:var(--white)}
+.hdr-back svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2}
+.hdr-sep{width:1px;height:16px;background:var(--divider)}
+.hdr-num{font-size:16px;font-weight:800;letter-spacing:1px;color:var(--white)}
+.hdr-title{font-size:13px;font-weight:700;letter-spacing:1px;color:var(--white)}
+.hdr-sub{font-size:11px;color:var(--gray1);letter-spacing:.04em}
+.hdr-brand{text-align:right}
+.hdr-brand span{display:block;font-size:12px;font-weight:800;letter-spacing:1px;color:var(--white)}
+
+/* ── NAV DOTS ── */
+.nav-dots{
+  position:fixed;right:24px;top:50%;transform:translateY(-50%);
+  display:flex;flex-direction:column;gap:10px;z-index:100;
+}
+.ndot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--gray2);cursor:pointer;
+  transition:all .3s;border:none;padding:0;
+}
+.ndot.active{background:var(--proj);transform:scale(1.5)}
+.ndot:hover{background:var(--white)}
+
+/* ── SECTIONS ── */
+section{
+  scroll-snap-align:start;
+  min-height:100vh;
+  padding:80px 80px 60px;
+  display:flex;flex-direction:column;justify-content:center;
+  position:relative;overflow:hidden;
+}
+.sec-dark{background:var(--dark)}
+.sec-black{background:var(--black)}
+.sec-card{background:#0c0c0c}
+
+/* ── BG ABSTRACT ── */
+.bg-abstract{
+  position:absolute;inset:0;pointer-events:none;z-index:0;overflow:hidden;
+}
+.bg-abstract::before{
+  content:'';position:absolute;
+  width:600px;height:600px;border-radius:50%;
+  background:radial-gradient(circle,rgba(61,190,138,.05) 0%,transparent 70%);
+  top:-100px;right:-100px;
+}
+.bg-abstract::after{
+  content:'';position:absolute;
+  width:400px;height:400px;border-radius:50%;
+  background:radial-gradient(circle,rgba(61,190,138,.03) 0%,transparent 70%);
+  bottom:-80px;left:10%;
+}
+
+/* ── PAGE COUNTER ── */
+.page-counter{
+  position:absolute;bottom:28px;right:40px;
+  font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--gray2);
+}
+
+/* ── SEC LABEL ── */
+.sec-label{
+  display:flex;align-items:baseline;gap:20px;
+  margin-bottom:44px;
+  padding-bottom:20px;
+  border-bottom:1px solid var(--divider);
+  position:relative;z-index:2;
+}
+.sec-num{font-size:48px;font-weight:900;color:var(--divider);line-height:1;letter-spacing:1px}
+.sec-title{font-size:clamp(20px,2vw,28px);font-weight:800;letter-spacing:2px;color:var(--white)}
+.sec-title-sub{font-size:12px;color:var(--gray1);letter-spacing:.04em;margin-top:4px}
+
+/* ── PROJ HEADER ── */
+.proj-hdr{
+  display:flex;align-items:baseline;gap:16px;
+  margin-bottom:10px;padding-bottom:12px;
+  border-bottom:1px solid var(--divider);
+  position:relative;z-index:2;
+}
+.proj-hdr-num{font-size:13px;font-weight:800;letter-spacing:1px;color:var(--white)}
+.proj-hdr-sep{color:var(--gray2);font-size:14px}
+.proj-hdr-cat{font-size:13px;font-weight:800;letter-spacing:1px;color:var(--white)}
+.proj-hdr-name{font-size:12px;color:var(--gray1);letter-spacing:.04em}
+
+/* ── SECTION 1 LAYOUT ── */
+.s1-layout{
+  display:grid;
+  grid-template-columns:1fr 420px;
+  gap:60px;align-items:center;
+  position:relative;z-index:2;
+  margin-top:32px;
+}
+.proj-title{
+  font-size:clamp(22px,2.4vw,34px);font-weight:700;
+  color:var(--white);margin-bottom:16px;line-height:1.3;letter-spacing:1px;
+}
+.proj-title em{font-style:normal;color:var(--proj)}
+.proj-body{
+  font-size:14px;color:var(--gray1);line-height:1.85;
+  margin-bottom:28px;font-weight:300;
+}
+.skills-label{font-size:12px;font-weight:700;color:var(--white);margin-bottom:10px;letter-spacing:.04em}
+.skills-divider{height:1px;background:var(--divider);margin-bottom:12px}
+.skills-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px}
+.skill-pill{
+  padding:6px 16px;border:1px solid var(--gray3);
+  font-size:11px;font-weight:700;color:var(--white);letter-spacing:.06em;
+}
+.link-section{margin-bottom:18px}
+.link-label{font-size:11px;font-weight:700;color:var(--gray1);letter-spacing:.06em;margin-bottom:8px}
+.link-divider{height:1px;background:var(--divider);margin-bottom:8px}
+.link-url{font-size:12px;color:var(--proj);text-decoration:none;word-break:break-all;line-height:1.5}
+.link-url:hover{text-decoration:underline}
+
+/* ── MOCKUP CARDS ── */
+.mockup-stack{
+  position:relative;height:440px;
+  display:flex;align-items:center;justify-content:center;
+}
+.phone-card{
+  position:absolute;
+  background:var(--card);
+  border:1px solid var(--divider);
+  border-radius:16px;
+  overflow:hidden;
+  box-shadow:0 24px 60px rgba(0,0,0,.6);
+}
+
+/* ── SECTION 2 LAYOUT ── */
+.features-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:1px;
+  background:var(--divider);
+  border:1px solid var(--divider);
+  margin-top:40px;
+  position:relative;z-index:2;
+}
+.feat-card{
+  background:var(--card);
+  padding:28px 24px;
+  position:relative;overflow:hidden;
+  transition:background .25s;
+}
+.feat-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:var(--proj);
+  transform:scaleX(0);transform-origin:left;
+  transition:transform .35s;
+}
+.feat-card:hover::before{transform:scaleX(1)}
+.feat-card:hover{background:var(--card2)}
+.feat-num{font-size:11px;font-weight:700;letter-spacing:.15em;color:var(--gray2);margin-bottom:16px}
+.feat-icon{font-size:26px;margin-bottom:12px;line-height:1}
+.feat-title{font-size:13px;font-weight:700;color:var(--white);margin-bottom:8px;letter-spacing:.5px;line-height:1.4}
+.feat-desc{font-size:11px;color:var(--gray2);line-height:1.6;margin-bottom:8px}
+.feat-tag{font-size:10px;color:var(--proj);letter-spacing:.06em;border-top:1px solid var(--divider);padding-top:10px;margin-top:8px}
+
+/* ── SECTION 3 LAYOUT ── */
+.s3-layout{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:60px;align-items:start;
+  position:relative;z-index:2;
+  margin-top:32px;
+}
+.tech-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:1px;
+  background:var(--divider);
+  border:1px solid var(--divider);
+  margin-bottom:32px;
+}
+.tech-item{
+  background:var(--card);
+  padding:20px;
+}
+.tech-cat-label{font-size:10px;font-weight:700;letter-spacing:.12em;color:var(--gray2);margin-bottom:10px}
+.tech-name{font-size:13px;font-weight:600;color:var(--white);margin-bottom:4px}
+.tech-desc{font-size:11px;color:var(--gray2)}
+
+.s3-phone{
+  background:var(--card);
+  border:1px solid var(--divider);
+  border-radius:16px;
+  overflow:hidden;
+  box-shadow:0 20px 50px rgba(0,0,0,.5);
+  margin-bottom:16px;
+}
+.s3-phone-header{
+  background:#0d1a3a;padding:14px 16px;
+  border-bottom:1px solid #1a3060;
+}
+.s3-phone-tag{font-size:9px;color:var(--proj);letter-spacing:.15em;margin-bottom:6px}
+.s3-phone-title{font-size:13px;font-weight:700;color:var(--white);line-height:1.3}
+.s3-phone-body{padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.s3-item{
+  background:#0d2a1a;border-radius:6px;padding:10px 12px;
+  font-size:10px;color:#3dbe8a;
+}
+
+.next-project{
+  display:flex;align-items:center;gap:12px;
+  margin-top:32px;
+  padding-top:24px;
+  border-top:1px solid var(--divider);
+  text-decoration:none;
+  color:var(--gray1);font-size:13px;
+  transition:color .2s;
+  position:relative;z-index:2;
+}
+.next-project:hover{color:var(--white)}
+.next-project-label{font-size:10px;letter-spacing:.1em;color:var(--gray2);margin-bottom:4px}
+.next-project-name{font-size:16px;font-weight:700;color:var(--white)}
+.next-arrow{
+  margin-left:auto;
+  width:40px;height:40px;border-radius:50%;
+  border:1px solid var(--divider);
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;transition:all .2s;
+}
+.next-project:hover .next-arrow{border-color:var(--proj);color:var(--proj)}
+
+/* ── REVEAL ── */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
+.reveal.visible{opacity:1;transform:none}
+.reveal-delay-1{transition-delay:.1s}
+.reveal-delay-2{transition-delay:.2s}
+.reveal-delay-3{transition-delay:.3s}
+
+/* ── RESPONSIVE ── */
+@media(max-width:960px){
+  section{padding:80px 48px 60px}
+  .s1-layout,.s3-layout{grid-template-columns:1fr;gap:40px}
+  .mockup-stack{display:none}
+  .features-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:600px){
+  section{padding:72px 24px 48px}
+  .hdr{padding:0 20px}
+  .features-grid{grid-template-columns:1fr}
+  .sec-num{font-size:28px}
+}
+</style>
+</head>
+<body>
+
+<!-- FIXED HEADER -->
+<header class="hdr">
+  <div class="hdr-left">
+    <a class="hdr-back" href="index.html">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      BACK
+    </a>
+    <div class="hdr-sep"></div>
+    <span class="hdr-num">01</span>
+    <div class="hdr-sep"></div>
+    <div>
+      <div class="hdr-title" id="hdr-title">PROJECTS</div>
+      <div class="hdr-sub" id="hdr-sub">이피링크 – 헬스장 통합 회원관리 솔루션</div>
+    </div>
+  </div>
+  <div class="hdr-brand">
+    <span>TEAMHOOT</span>
+    <span>BUSINESS PORTFOLIO</span>
+  </div>
+</header>
+
+<!-- NAV DOTS -->
+<nav class="nav-dots" aria-label="섹션 이동">
+  <button class="ndot active" data-target="s1" title="프로젝트 개요"></button>
+  <button class="ndot" data-target="s2" title="주요 기능"></button>
+  <button class="ndot" data-target="s3" title="기술 & 다음 프로젝트"></button>
+</nav>
+
+<!-- ══ SECTION 1 — OVERVIEW ══ -->
+<section id="s1" class="sec-dark">
+  <div class="bg-abstract"></div>
+
+  <div class="proj-hdr reveal">
+    <span class="proj-hdr-num">01</span>
+    <span class="proj-hdr-sep">|</span>
+    <span class="proj-hdr-cat">PROJECTS</span>
+    <span class="proj-hdr-name">EPlink – 헬스장 통합 회원관리 솔루션</span>
+  </div>
+
+  <div class="s1-layout">
+    <div>
+      <h1 class="proj-title reveal reveal-delay-1">
+        <em>이피링크:</em> 헬스장을 위한<br>올인원 회원관리 &amp; 자동화 플랫폼
+      </h1>
+      <p class="proj-body reveal reveal-delay-2">
+        AWS Rekognition 기반 <strong style="color:var(--white)">얼굴인식 무인 입장</strong>부터 IoT 자동문 제어, 온오프라인 PG 통합결제, 비대면 온보딩, 전자계약, 생애주기 CRM 자동화까지 —
+        <strong style="color:var(--white)">태블릿 1대로 완전 무인 운영</strong>이 가능한 환경을 구현합니다.
+      </p>
+
+      <div class="reveal reveal-delay-2">
+        <div class="skills-label">Skills and deliverables</div>
+        <div class="skills-divider"></div>
+        <div class="skills-row">
+          <span class="skill-pill">React Native</span>
+          <span class="skill-pill">Node.js</span>
+          <span class="skill-pill">AWS Rekognition</span>
+          <span class="skill-pill">IoT</span>
+          <span class="skill-pill">MySQL</span>
+          <span class="skill-pill">PG 통합결제</span>
+        </div>
+      </div>
+
+      <div class="reveal reveal-delay-3">
+        <div class="link-section">
+          <div class="link-label">Download Links – Google Play</div>
+          <div class="link-divider"></div>
+          <a class="link-url" href="#">https://play.google.com/store/apps/details?id=com.eplink</a>
+        </div>
+        <div class="link-section">
+          <div class="link-label">Download Links – App Store</div>
+          <div class="link-divider"></div>
+          <a class="link-url" href="#">https://apps.apple.com/kr/app/eplink</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="mockup-stack reveal reveal-delay-2">
+      <div class="phone-card" style="width:210px;transform:rotate(-3deg) translateY(20px)">
+        <div style="background:#0d1a3a;padding:20px;border-bottom:1px solid #1a3060">
+          <div style="font-size:10px;color:#3dbe8a;letter-spacing:.15em;margin-bottom:8px">FACE RECOGNITION</div>
+          <div style="font-size:14px;font-weight:700;color:#fff;line-height:1.3">얼굴 인식<br>핸즈프리 입장</div>
+        </div>
+        <div style="background:#141414;padding:16px;display:flex;flex-direction:column;gap:8px">
+          <div style="background:#0d2a1a;border-radius:6px;padding:10px;font-size:11px;color:#3dbe8a">✓ AWS Rekognition 연동</div>
+          <div style="background:#0d2a1a;border-radius:6px;padding:10px;font-size:11px;color:#3dbe8a">✓ 핸즈프리 자동 입장</div>
+          <div style="background:#0d2a1a;border-radius:6px;padding:10px;font-size:11px;color:#3dbe8a">✓ IoT 자동문 연동</div>
+        </div>
+      </div>
+      <div class="phone-card" style="width:210px;transform:rotate(2deg) translateY(-10px)">
+        <div style="background:#0f1a38;padding:20px;border-bottom:1px solid #1a2a50">
+          <div style="font-size:10px;color:#3dbe8a;letter-spacing:.15em;margin-bottom:8px">QR SECURITY</div>
+          <div style="font-size:14px;font-weight:700;color:#fff;line-height:1.3">15초 QR<br>보안 토큰</div>
+        </div>
+        <div style="background:#141414;padding:16px">
+          <div style="background:#0d2a1a;border-radius:50%;width:72px;height:72px;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:28px">🔒</div>
+          <div style="text-align:center;font-size:11px;color:#aaa">15초마다 자동 갱신</div>
+          <div style="text-align:center;font-size:11px;color:#555;margin-top:4px">캡처·공유 원천 차단</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-counter">01 / 03</div>
+</section>
+
+<!-- ══ SECTION 2 — FEATURES ══ -->
+<section id="s2" class="sec-black">
+  <div class="bg-abstract"></div>
+
+  <div class="sec-label reveal">
+    <span class="sec-num">02</span>
+    <div>
+      <div class="sec-title">FEATURES</div>
+      <div class="sec-title-sub">8가지 핵심 기능</div>
+    </div>
+  </div>
+
+  <div class="features-grid">
+    <div class="feat-card reveal">
+      <div class="feat-num">01</div>
+      <div class="feat-icon">👤</div>
+      <div class="feat-title">얼굴인식 핸즈프리 입장</div>
+      <div class="feat-desc">카드도 앱도 필요 없다. 얼굴이 곧 열쇠다.</div>
+      <div class="feat-tag">AWS Rekognition</div>
+    </div>
+    <div class="feat-card reveal reveal-delay-1">
+      <div class="feat-num">02</div>
+      <div class="feat-icon">🚪</div>
+      <div class="feat-title">IoT 자동문 통합 제어</div>
+      <div class="feat-desc">단일/다중 자동문을 하나의 시스템으로 중앙 관리</div>
+      <div class="feat-tag">얼굴인식 + QR + IoT</div>
+    </div>
+    <div class="feat-card reveal reveal-delay-2">
+      <div class="feat-num">03</div>
+      <div class="feat-icon">📱</div>
+      <div class="feat-title">태블릿 1대 완전 무인화</div>
+      <div class="feat-desc">추가 장비 없이 키오스크 + 얼굴인식 동시 운영</div>
+      <div class="feat-tag">키오스크 + 얼굴인식</div>
+    </div>
+    <div class="feat-card reveal reveal-delay-3">
+      <div class="feat-num">04</div>
+      <div class="feat-icon">💳</div>
+      <div class="feat-title">온오프라인 통합 결제</div>
+      <div class="feat-desc">기존 단말기 재활용으로 고비용 없이 PG 통합</div>
+      <div class="feat-tag">기존 단말기 재활용</div>
+    </div>
+    <div class="feat-card reveal reveal-delay-1">
+      <div class="feat-num">05</div>
+      <div class="feat-icon">🔒</div>
+      <div class="feat-title">15초 QR 보안 토큰</div>
+      <div class="feat-desc">복사·공유·캡처 소용없는 구조적 보안 설계</div>
+      <div class="feat-tag">캡처 방지 + 재생성</div>
+    </div>
+    <div class="feat-card reveal reveal-delay-2">
+      <div class="feat-num">06</div>
+      <div class="feat-icon">✍️</div>
+      <div class="feat-title">비대면 가입 플로우</div>
+      <div class="feat-desc">방문 없이 엔드투엔드 온보딩 완결</div>
+      <div class="feat-tag">링크결제 → 계약 → 앱 → 얼굴등록</div>
+    </div>
+    <div class="feat-card reveal reveal-delay-3">
+      <div class="feat-num">07</div>
+      <div class="feat-icon">📄</div>
+      <div class="feat-title">전자계약서 무마찰 전환</div>
+      <div class="feat-desc">기존 수기 계약서 그대로 업로드해 전자 서명 수취</div>
+      <div class="feat-tag">수기 계약서 활용</div>
+    </div>
+    <div class="feat-card reveal reveal-delay-1">
+      <div class="feat-num">08</div>
+      <div class="feat-icon">💬</div>
+      <div class="feat-title">생애주기 CRM 자동화</div>
+      <div class="feat-desc">고객의 행동이 메시지를 보낸다</div>
+      <div class="feat-tag">행동 트리거 분기 메시징</div>
+    </div>
+  </div>
+
+  <div class="page-counter">02 / 03</div>
+</section>
+
+<!-- ══ SECTION 3 — TECH & NEXT ══ -->
+<section id="s3" class="sec-card">
+  <div class="bg-abstract"></div>
+
+  <div class="sec-label reveal">
+    <span class="sec-num">03</span>
+    <div>
+      <div class="sec-title">ARCHITECTURE</div>
+      <div class="sec-title-sub">기술 스택 & 시스템 구조</div>
+    </div>
+  </div>
+
+  <div class="s3-layout">
+    <div>
+      <div class="tech-grid reveal">
+        <div class="tech-item">
+          <div class="tech-cat-label">FRONTEND</div>
+          <div class="tech-name">React Native</div>
+          <div class="tech-desc">크로스플랫폼 모바일 앱</div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-cat-label">BACKEND</div>
+          <div class="tech-name">Node.js</div>
+          <div class="tech-desc">REST API, 비즈니스 로직</div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-cat-label">AI / VISION</div>
+          <div class="tech-name">AWS Rekognition</div>
+          <div class="tech-desc">얼굴인식 & 출입 인증</div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-cat-label">DATABASE</div>
+          <div class="tech-name">MySQL</div>
+          <div class="tech-desc">회원 & 결제 데이터 관리</div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-cat-label">HARDWARE</div>
+          <div class="tech-name">IoT Gateway</div>
+          <div class="tech-desc">자동문 제어 & 연동</div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-cat-label">PAYMENT</div>
+          <div class="tech-name">PG 통합결제</div>
+          <div class="tech-desc">온오프라인 결제 통합</div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-cat-label">SECURITY</div>
+          <div class="tech-name">JWT / QR Auth</div>
+          <div class="tech-desc">15초 토큰 & 캡처 방지</div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-cat-label">DEVOPS</div>
+          <div class="tech-name">Docker</div>
+          <div class="tech-desc">컨테이너 배포 & 운영</div>
+        </div>
+      </div>
+
+      <a class="next-project reveal reveal-delay-1" href="bodycodi.html">
+        <div>
+          <div class="next-project-label">NEXT PROJECT</div>
+          <div class="next-project-name">Bodycodi – 피트니스 멤버십 관리 솔루션</div>
+        </div>
+        <div class="next-arrow">→</div>
+      </a>
+    </div>
+
+    <div class="reveal reveal-delay-1">
+      <div class="s3-phone">
+        <div class="s3-phone-header">
+          <div class="s3-phone-tag">FACE ENTRY</div>
+          <div class="s3-phone-title">얼굴인식<br>무인 입장</div>
+        </div>
+        <div class="s3-phone-body">
+          <div class="s3-item">✓ AWS Rekognition 실시간 인증</div>
+          <div class="s3-item">✓ IoT 자동문 즉시 개방</div>
+          <div class="s3-item">✓ 태블릿 1대로 완전 운영</div>
+        </div>
+      </div>
+      <div class="s3-phone">
+        <div class="s3-phone-header">
+          <div class="s3-phone-tag">CRM AUTO</div>
+          <div class="s3-phone-title">생애주기<br>CRM 자동화</div>
+        </div>
+        <div class="s3-phone-body">
+          <div class="s3-item">✓ 행동 트리거 자동 메시지</div>
+          <div class="s3-item">✓ 만료 전 리텐션 캠페인</div>
+          <div class="s3-item">✓ 비대면 재등록 플로우</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-counter">03 / 03</div>
+</section>
+
+<script>
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible') });
+}, { threshold: 0.12 });
+reveals.forEach(el => observer.observe(el));
+
+const sections = ['s1','s2','s3'];
+const dots = document.querySelectorAll('.ndot');
+
+dots.forEach((dot, i) => {
+  dot.addEventListener('click', () => {
+    document.getElementById(sections[i]).scrollIntoView({ behavior:'smooth' });
+  });
+});
+
+const secObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if(e.isIntersecting){
+      const idx = sections.indexOf(e.target.id);
+      dots.forEach(d => d.classList.remove('active'));
+      if(idx >= 0) dots[idx].classList.add('active');
+      document.getElementById('hdr-sub').textContent =
+        ['이피링크 – 헬스장 통합 회원관리 솔루션','주요 기능','기술 스택 & 아키텍처'][idx] || '';
+    }
+  });
+}, { threshold: 0.5 });
+
+sections.forEach(id => {
+  const el = document.getElementById(id);
+  if(el) secObserver.observe(el);
+});
+</script>
+</body>
+</html>
