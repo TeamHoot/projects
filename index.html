@@ -1081,6 +1081,52 @@ section{
   header{ height:44px }
   #progress{ top:44px }
 }
+
+@media(max-width:430px){
+  /* ── Hero — 좌측 인덴트 축소 ── */
+  .hero-left-line{ left:24px }
+  .hero-side-text{ left:26px }
+  .hero-scroll{ left:36px }
+  .hero-app-icon{ left:52px; top:100px; width:56px; height:56px }
+  .hero-app-icon img{ width:52px; height:52px }
+  .hero-content{ padding-left:36px; padding-top:84px }
+  .hero-title{ font-size:clamp(28px,8vw,44px); letter-spacing:-0.5px }
+  .hero-eyebrow{ font-size:16px; letter-spacing:.2em }
+
+  /* ── Header — 모바일 한줄 레이아웃 ── */
+  header{ padding:0 16px; justify-content:space-between }
+  .hdr-left{ gap:8px; flex:1; min-width:0; overflow:hidden }
+  .hdr-sep{ display:none }
+  .hdr-num{ font-size:12px; letter-spacing:.5px }
+  .hdr-section{ font-size:12px; letter-spacing:.5px; white-space:nowrap }
+  .hdr-sub{ display:none }
+  .hdr-brand{ white-space:nowrap; flex-shrink:0 }
+  .hdr-brand span{ display:inline; font-size:10px; letter-spacing:.5px; font-weight:700 }
+  .hdr-brand span:first-child::after{ content:' ' }
+
+  /* ── Section label ── */
+  .sec-title{ font-size:20px; letter-spacing:1px }
+  .sec-num{ font-size:20px }
+
+  /* ── Philosophy diagram — 수직 스택 ── */
+  .philosophy-diagram{ flex-direction:column; align-items:center; gap:12px }
+  .diagram-arrow{ margin-top:0; transform:rotate(90deg); font-size:16px }
+  .diagram-circle{ width:68px; height:68px; font-size:14px }
+
+  /* ── CEO ── */
+  .ceo-photo-wrap{ height:200px }
+  .ceo-tag{ font-size:14px; padding:3px 8px }
+
+  /* ── Team ── */
+  .team-photo-wrap{ height:200px }
+  .team-body{ font-size:15px }
+  .team-body-list li{ font-size:15px }
+
+  /* ── Swiper ── */
+  .swiper-track-wrap{ padding:0 16px }
+  .proj-sw-card{ width:256px }
+  .swiper-section-header{ padding:0 16px }
+}
 </style>
 </head>
 <body>

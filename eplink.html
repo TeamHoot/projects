@@ -159,7 +159,7 @@ section{
 
 /* ── MOCKUP CARDS ── */
 .mockup-stack{
-  position:relative;height:440px;
+  position:relative;
   display:flex;align-items:center;justify-content:center;
 }
 .phone-card{
@@ -287,6 +287,32 @@ section{
   .features-grid{grid-template-columns:1fr}
   .sec-num{font-size:28px}
 }
+
+@media(max-width:430px){
+  /* ── Header ── */
+  .hdr-sub{ display:none }
+  .hdr{ padding:0 16px }
+
+  /* ── Section ── */
+  section{ padding:64px 16px 40px }
+  .sec-num{ font-size:20px }
+  .sec-title{ font-size:20px; letter-spacing:1px }
+
+  /* ── Overview ── */
+  .proj-title{ font-size:clamp(20px,6vw,28px) }
+  .proj-body{ font-size:13px }
+  .skills-row{ gap:6px }
+  .skill-pill{ padding:5px 12px; font-size:11px }
+
+  /* ── Features — 1열로 ── */
+  .features-grid{ grid-template-columns:1fr }
+
+  /* ── Tech grid — 1열로 ── */
+  .tech-grid{ grid-template-columns:1fr }
+
+  /* ── Next project ── */
+  .next-project-name{ font-size:14px }
+}
 </style>
 </head>
 <body>
@@ -333,63 +359,55 @@ section{
   <div class="s1-layout">
     <div>
       <h1 class="proj-title reveal reveal-delay-1">
-        <em>이피링크:</em> 헬스장을 위한<br>올인원 회원관리 &amp; 자동화 플랫폼
+        <em>EPlink:</em> 헬스장 운영을 혁신하는<br>올인원 무인화 &amp; 자동화 플랫폼
       </h1>
       <p class="proj-body reveal reveal-delay-2">
-        AWS Rekognition 기반 <strong style="color:var(--white)">얼굴인식 무인 입장</strong>부터 IoT 자동문 제어, 온오프라인 PG 통합결제, 비대면 온보딩, 전자계약, 생애주기 CRM 자동화까지 —
-        <strong style="color:var(--white)">태블릿 1대로 완전 무인 운영</strong>이 가능한 환경을 구현합니다.
+        EPlink(Enhanced Performance link)는 <strong style="color:var(--white)">안면인식 출입 통제</strong>부터 비대면 전자계약, 온·오프라인 통합 결제, 그리고 <strong style="color:var(--white)">CRM 기반의 자동화 메시징</strong>까지 피트니스 센터의 모든 운영 생애주기를 하나로 연결하는 통합 솔루션입니다. 최소한의 하드웨어 비용으로 완벽한 무인 자동화 시스템을 구축하여 센터의 운영 효율을 극대화합니다.
       </p>
 
       <div class="reveal reveal-delay-2">
         <div class="skills-label">Skills and deliverables</div>
         <div class="skills-divider"></div>
         <div class="skills-row">
+          <span class="skill-pill">Spring Boot</span>
+          <span class="skill-pill">React</span>
           <span class="skill-pill">React Native</span>
-          <span class="skill-pill">Node.js</span>
-          <span class="skill-pill">AWS Rekognition</span>
-          <span class="skill-pill">IoT</span>
           <span class="skill-pill">MySQL</span>
-          <span class="skill-pill">PG 통합결제</span>
+          <span class="skill-pill">AI Face Recognition (AWS)</span>
+          <span class="skill-pill">IoT Integration</span>
+          <span class="skill-pill">PG/VAN Module Interfacing (Nice Payments)</span>
+          <span class="skill-pill">Multi-OS Device Control (Windows &amp; Android)</span>
+          <span class="skill-pill">e-Contract &amp; Digital Signature System</span>
         </div>
       </div>
 
       <div class="reveal reveal-delay-3">
         <div class="link-section">
-          <div class="link-label">Download Links – Google Play</div>
+          <div class="link-label">Download Links - Google Play</div>
           <div class="link-divider"></div>
-          <a class="link-url" href="#">https://play.google.com/store/apps/details?id=com.eplink</a>
+          <a class="link-url" href="https://play.google.com/store/apps/details?id=com.bodycodi.bpay&hl=ko&gl=US" target="_blank" rel="noopener">https://play.google.com/store/apps/details?id=com.bodycodi.bpay&hl=ko&gl=US</a>
         </div>
         <div class="link-section">
-          <div class="link-label">Download Links – App Store</div>
+          <div class="link-label">Download Links - App Store</div>
           <div class="link-divider"></div>
-          <a class="link-url" href="#">https://apps.apple.com/kr/app/eplink</a>
+          <a class="link-url" href="https://apps.apple.com/kr/app/%EB%B0%94%EB%94%94%EC%BD%94%EB%94%94-%EB%A9%A4%EB%B2%84%EC%8A%A4-bodycodi-members/id1557408918" target="_blank" rel="noopener">https://apps.apple.com/kr/app/%EB%B0%94%EB%94%94%EC%BD%94%EB%94%94-%EB%A9%A4%EB%B2%84%EC%8A%A4-bodycodi-members/id1557408918</a>
         </div>
       </div>
     </div>
 
     <div class="mockup-stack reveal reveal-delay-2">
-      <div class="phone-card" style="width:210px;transform:rotate(-3deg) translateY(20px)">
-        <div style="background:#0d1a3a;padding:20px;border-bottom:1px solid #1a3060">
-          <div style="font-size:10px;color:#3dbe8a;letter-spacing:.15em;margin-bottom:8px">FACE RECOGNITION</div>
-          <div style="font-size:14px;font-weight:700;color:#fff;line-height:1.3">얼굴 인식<br>핸즈프리 입장</div>
-        </div>
-        <div style="background:#141414;padding:16px;display:flex;flex-direction:column;gap:8px">
-          <div style="background:#0d2a1a;border-radius:6px;padding:10px;font-size:11px;color:#3dbe8a">✓ AWS Rekognition 연동</div>
-          <div style="background:#0d2a1a;border-radius:6px;padding:10px;font-size:11px;color:#3dbe8a">✓ 핸즈프리 자동 입장</div>
-          <div style="background:#0d2a1a;border-radius:6px;padding:10px;font-size:11px;color:#3dbe8a">✓ IoT 자동문 연동</div>
-        </div>
-      </div>
-      <div class="phone-card" style="width:210px;transform:rotate(2deg) translateY(-10px)">
-        <div style="background:#0f1a38;padding:20px;border-bottom:1px solid #1a2a50">
-          <div style="font-size:10px;color:#3dbe8a;letter-spacing:.15em;margin-bottom:8px">QR SECURITY</div>
-          <div style="font-size:14px;font-weight:700;color:#fff;line-height:1.3">15초 QR<br>보안 토큰</div>
-        </div>
-        <div style="background:#141414;padding:16px">
-          <div style="background:#0d2a1a;border-radius:50%;width:72px;height:72px;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:28px">🔒</div>
-          <div style="text-align:center;font-size:11px;color:#aaa">15초마다 자동 갱신</div>
-          <div style="text-align:center;font-size:11px;color:#555;margin-top:4px">캡처·공유 원천 차단</div>
-        </div>
-      </div>
+      <img
+        src="eplink-mockup.png"
+        alt="EPlink 앱 화면 – 회원 앱과 QR 체크인"
+        style="
+          width:100%;
+          max-width:480px;
+          height:auto;
+          object-fit:contain;
+          display:block;
+          filter:drop-shadow(0 24px 60px rgba(0,0,0,.7));
+        "
+      >
     </div>
   </div>
 
