@@ -1,13 +1,11 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { fileURLToPath, URL } from 'node:url'
+import { BASE_PATH } from './site.config'
 
-// base 는 배포 URL 형태가 결정한다 (CLAUDE.md §4).
-//   TeamHoot/TeamHoot.github.io → https://teamhoot.github.io      → "/"
-//   TeamHoot/projects          → https://teamhoot.github.io/projects → "/projects/"
-// 사람 지시(2026-08-15): 루트 주소로 서비스한다 → "/".
 export default defineConfig({
-  base: '/',
+  // 배포 경로는 site.config.ts 가 단일 원본이다.
+  base: BASE_PATH,
   plugins: [react()],
   resolve: {
     alias: {
