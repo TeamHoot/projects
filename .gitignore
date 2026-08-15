@@ -1,0 +1,15 @@
+node_modules/
+# iCloud Drive 안이라 node_modules 를 .nosync 폴더에 두고 심볼릭 링크로 연결한다.
+# (iCloud 는 .nosync 접미사 폴더를 동기화하지 않는다)
+node_modules.nosync/
+dist/
+.DS_Store
+Thumbs.db
+*.log
+.vite/
+.vite-react-ssg-temp/
+
+# Playwright
+playwright-report/
+test-results/
+blob-report/

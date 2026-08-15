@@ -1,0 +1,83 @@
+/*
+ * 디자인 토큰 — 유일한 원본은 docs/plans/DESIGN_SYSTEM.md.
+ * 값을 바꿀 때는 그 문서를 먼저 고치고 여기에 옮긴다.
+ * CLAUDE.md §1: 컴포넌트에서 하드코딩 hex 금지 — 반드시 이 변수를 참조한다.
+ */
+
+:root {
+  /* ── 배경 3단 ── */
+  --bg: #ffffff;      /* 기본 섹션 */
+  --bg-soft: #f5f7fa; /* 교차 밴드 — 인접 섹션과 번갈아 깔아 리듬을 만든다 */
+  --bg-soft2: #eef1f6;/* 카드 내부 / 이미지 placeholder / 푸터 */
+
+  /* ── 텍스트 3단 ──
+     위계는 '색'이 아니라 '크기·굵기'로 준다. 설명문을 회색으로 깔면
+     어디서 본 듯한 인상이 되므로 '살짝 옅은 검정'을 쓴다. (DESIGN_SYSTEM §2) */
+  --text: #101216;      /* 본문·제목. near-black */
+  --text-sub: #2b2f36;  /* 설명문 */
+  --text-mute: #5a6068; /* 캡션·메타 */
+
+  --line: #e6e9ef;      /* 모든 구분선·카드 테두리 */
+
+  /* ── 브랜드 ──
+     OPEN[D2] 미해결: 아래 --accent 는 레퍼런스(educomproject.co.kr)의 네이비다.
+     HOOT 고유색으로 치환할 때 고쳐야 할 곳은 이 한 줄뿐이다. */
+  --accent: #17356b;       /* 1차 CTA · 링크 · 활성 밑줄 · 아이브로우 */
+  --accent-fill: #2361dc;  /* 기능 카드 채움 (레퍼런스 2026-08-15 추가분) */
+  --point: #00b3e6;        /* 시안 — 점·바 같은 미세 요소 전용. 면적 금지 */
+
+  --on-accent: #ffffff;
+
+  /* ── 다크 밴드 (섹션 반전용) ──
+     전면 다크가 아니라 특정 섹션만 뒤집어 강조한다. */
+  --dark-intro: #04050a;  /* 최상단 풀스크린 히어로 */
+  --dark-qa: #111726;     /* 검수/품질 섹션 */
+  --dark-review: #141821; /* 고객후기 섹션 */
+  --dark-quote: #14161d;  /* 대표 메시지 카드 */
+  --dark-menu: #0b0f16;   /* 모바일 전체화면 메뉴 */
+  --on-dark: #ffffff;
+  --on-dark-sub: #c9d2e2;
+  /* 다크 위 강조는 '색'이 아니라 '밝기 차이'로 준다 (DESIGN_SYSTEM §2) */
+  --on-dark-dim: rgba(255, 255, 255, 0.74);
+
+  /* ── 그림자 ── */
+  --shadow: 0 10px 40px rgba(20, 24, 40, 0.08);
+  --shadow-sm: 0 4px 18px rgba(20, 24, 40, 0.06);
+  --shadow-accent: 0 10px 28px rgba(23, 53, 107, 0.32);
+  --shadow-accent-hover: 0 16px 36px rgba(23, 53, 107, 0.44);
+
+  /* ── 라운드 ──
+     카드는 14px, 버튼은 0. 각진 버튼이 이 룩앤필의 시그니처다. */
+  --radius-card: 14px;
+  --radius-lg: 20px;
+  --radius-xs: 8px;
+  --radius-btn: 0;
+
+  /* ── 레이아웃 ── */
+  --maxw: 1400px;
+  --gutter: 30px;
+  --header-h: 68px;
+  --section-py: 104px;
+  --section-py-sm: 74px;
+
+  /* ── 타이포 ── */
+  --font-sans: 'Pretendard Variable', 'Pretendard', -apple-system,
+    BlinkMacSystemFont, 'Segoe UI', 'Malgun Gothic', sans-serif;
+
+  /* 글자가 커질수록 자간을 조인다. 이게 인상의 절반이다. (DESIGN_SYSTEM §2) */
+  --ls-body: -0.01em;
+  --ls-sub: -0.03em;
+  --ls-title: -0.045em;
+  --ls-display: -0.05em;
+
+  /* ── 모션 ──
+     호버 관용구는 단 하나: translateY(-2px) + 그림자 강화. */
+  --t-micro: 0.2s;
+  --t-btn: 0.22s;
+  --t-overlay: 0.3s;
+  --hover-lift: translateY(-2px);
+}
+
+/* 브레이크포인트는 CSS 변수로 쓸 수 없다. 값만 여기 적어 두고 미디어쿼리에 직접 쓴다.
+   OPEN[D1] 결정: 레퍼런스의 680(모바일 전환) / 820(태블릿 2열)을 주력으로 채택.
+   보조: 520 · 1080 · 1200 · 1400 */

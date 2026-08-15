@@ -1,0 +1,44 @@
+/* 헤더 — 기본 상태엔 경계선이 없고, 스크롤해야 선과 그림자가 나타난다.
+   (스크롤 상태 전환은 P005-DEV에서 붙인다) */
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  height: var(--header-h);
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: saturate(180%) blur(14px);
+  border-bottom: 1px solid transparent;
+  transition: var(--t-overlay);
+}
+
+.bar {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: var(--ls-sub);
+  color: var(--text);
+}
+
+.main {
+  padding-top: var(--header-h);
+}
+
+.footer {
+  background: var(--bg-soft2);
+  color: var(--text-sub);
+  padding: 60px 0 40px;
+  border-top: 1px solid var(--line);
+}
+
+.footNote {
+  font-size: 0.92rem;
+  color: var(--text-mute);
+}

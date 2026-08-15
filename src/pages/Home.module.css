@@ -1,0 +1,36 @@
+.placeholder {
+  padding: var(--section-py) 0;
+}
+
+.eyebrow {
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: var(--ls-body);
+  color: var(--accent);
+  margin-bottom: 14px;
+}
+
+/* 섹션 제목만 clamp 대신 고정값 + 미디어쿼리로 통제한다 (DESIGN_SYSTEM §2) */
+.title {
+  font-size: 2.85rem;
+  font-weight: 800;
+  letter-spacing: var(--ls-display);
+  line-height: 1.22;
+}
+
+.desc {
+  font-size: 1.08rem;
+  color: var(--text-sub);
+  max-width: 680px;
+  margin-top: 18px;
+}
+
+@media (max-width: 680px) {
+  .placeholder {
+    padding: var(--section-py-sm) 0;
+  }
+  .title {
+    font-size: 2.1rem;
+    letter-spacing: var(--ls-title);
+  }
+}
