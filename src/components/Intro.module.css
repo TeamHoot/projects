@@ -28,9 +28,12 @@
   inset: 0;
   transform-style: preserve-3d;
   z-index: 1;
+  /* 기울기는 JS 가 매 프레임 transform 으로 넣는다. transition 을 걸면
+     보간이 이중으로 일어나 뭉개지므로 걸지 않는다. */
+  will-change: transform;
 }
 
-/* 떠다니는 프로젝트 화면 한 장 (JS 가 생성) */
+/* 제자리에 고정된 프로젝트 화면 한 장 (JS 가 생성) */
 .panel {
   position: absolute;
   left: 50%;
@@ -41,14 +44,15 @@
   height: var(--h);
   border-radius: 12px;
   overflow: hidden;
-  opacity: 0;
-  will-change: transform, opacity;
   background: #0d1017;
+  opacity: var(--op);
+  /* 깊이(--z)가 제각각이라 부모가 기울 때 서로 어긋나며 시차가 생긴다.
+     이게 이 연출의 전부다 — 패널 자체는 움직이지 않는다. */
+  transform: translate3d(var(--x), var(--y), var(--z)) rotateX(var(--rx)) rotateY(var(--ry));
   box-shadow:
     0 34px 90px rgba(0, 0, 0, 0.7),
     0 0 0 1px rgba(255, 255, 255, 0.1),
     0 0 60px rgba(50, 120, 255, 0.09);
-  animation: fly var(--dur) linear var(--delay) infinite;
 }
 
 .panel img {
@@ -68,23 +72,6 @@
   position: absolute;
   inset: 0;
   background: linear-gradient(150deg, rgba(120, 180, 255, 0.16), transparent 46%);
-}
-
-@keyframes fly {
-  0% {
-    transform: translate3d(var(--x), var(--y), -2900px) rotateX(var(--rx)) rotateY(var(--ry));
-    opacity: 0;
-  }
-  14% {
-    opacity: 0.88;
-  }
-  72% {
-    opacity: 0.88;
-  }
-  100% {
-    transform: translate3d(var(--x), var(--y), 820px) rotateX(var(--rx)) rotateY(var(--ry));
-    opacity: 0;
-  }
 }
 
 /* 중앙 비네트 — 카피 가독성 확보 */
@@ -238,24 +225,21 @@
   .headline {
     font-size: clamp(1.85rem, 7.4vw, 2.6rem);
   }
+  /* 좁은 화면은 카피가 폭을 다 써서 뒤가 조금만 밝아도 글자가 죽는다 — 더 깊게 덮는다 */
   .vignette {
     background: radial-gradient(
-      74% 46% at 50% 46%,
-      rgba(4, 5, 10, 0.93) 0%,
-      rgba(4, 5, 10, 0.7) 46%,
-      rgba(4, 5, 10, 0) 82%
+      96% 42% at 50% 47%,
+      rgba(4, 5, 10, 0.985) 0%,
+      rgba(4, 5, 10, 0.94) 42%,
+      rgba(4, 5, 10, 0.6) 68%,
+      rgba(4, 5, 10, 0) 92%
     );
   }
 }
 
-/* 모션을 끈 사용자에게는 패널을 멀리 세워두기만 한다 — 배경 질감은 남기되 움직이지 않는다.
-   별 필드는 아예 그리지 않는다(Intro.tsx). */
+/* 모션을 끈 사용자에게는 기울기도 별도 그리지 않는다(Intro.tsx).
+   패널은 배치 그대로 남아 배경 질감이 되고, 움직이는 것이 하나도 없다. */
 @media (prefers-reduced-motion: reduce) {
-  .panel {
-    animation: none;
-    opacity: 0.5;
-    transform: translate3d(var(--x), var(--y), -300px);
-  }
   .eyebrow,
   .headline,
   .lead,
