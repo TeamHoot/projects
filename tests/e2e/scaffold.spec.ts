@@ -41,13 +41,35 @@ test.describe('scaffold', () => {
 })
 
 test.describe('intro hero', () => {
-  test('h1 이 정확히 하나이고 강조어가 순백으로 분리돼 있다', async ({ page }) => {
+  test('h1 이 정확히 하나이고 두 줄이 굵기로 갈린다', async ({ page }) => {
     await page.goto('./')
     await expect(page.locator('h1')).toHaveCount(1)
-    const em = page.locator('h1 span')
-    await expect(em).toHaveText('개발팀')
-    // 강조는 색이 아니라 밝기 차이로 준다 — 강조어만 순백이어야 한다.
-    await expect(em).toHaveCSS('color', 'rgb(255, 255, 255)')
+
+    const lines = page.locator('h1 span')
+    await expect(lines).toHaveCount(2)
+    await expect(lines.nth(0)).toHaveText('웹 · 앱 · 업무 시스템')
+    await expect(lines.nth(1)).toHaveText('실력 위에 AI를 더한 개발팀입니다')
+
+    // 위계는 크기가 아니라 굵기다 — 두 줄의 font-size 는 같고 weight 만 다르다.
+    const sizes = await lines.evaluateAll((els) =>
+      els.map((el) => getComputedStyle(el).fontSize),
+    )
+    expect(sizes[0]).toBe(sizes[1])
+    await expect(lines.nth(0)).toHaveCSS('font-weight', '300')
+    await expect(lines.nth(1)).toHaveCSS('font-weight', '800')
+  })
+
+  test('주장 줄이 그라디언트로 칠해진다 — 글자색은 투명이어야 한다', async ({ page }) => {
+    // background-clip:text 가 빠지면 글자가 통째로 안 보인다. 회귀로 잡는다.
+    await page.goto('./')
+    const main = page.locator('h1 span').nth(1)
+    await expect(main).toHaveCSS('color', 'rgba(0, 0, 0, 0)')
+    const clip = await main.evaluate(
+      (el) =>
+        getComputedStyle(el).backgroundClip ||
+        getComputedStyle(el).webkitBackgroundClip,
+    )
+    expect(clip).toBe('text')
   })
 
   test('프로젝트가 성단 5개로 그룹핑되고 각각 이름이 붙는다', async ({ page }) => {

@@ -15,6 +15,21 @@
   isolation: isolate;
 }
 
+/* 위에서 내려오는 코발트 광원 (C3 시안).
+   히어로에서 브랜드색이 드러나는 유일한 자리다 — 면이 아니라 빛으로 쓴다.
+   화면 위쪽 밖에서 시작해야 원이 아니라 '빛이 내려온다'로 읽힌다. */
+.glow {
+  position: absolute;
+  left: 50%;
+  top: -45%;
+  transform: translateX(-50%);
+  width: min(1100px, 140vw);
+  height: 900px;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(closest-side, var(--accent-glow), var(--accent-glow-0) 70%);
+}
+
 .stars {
   position: absolute;
   inset: 0;
@@ -73,7 +88,7 @@
   height: var(--h);
   border-radius: 12px;
   overflow: hidden;
-  background: #0d1017;
+  background: var(--gray-900);
   /* 성단 안에서 살짝 어긋나게 겹친다 — 카드 뭉치처럼 */
   transform: translate3d(var(--x), var(--y), var(--z)) rotateX(var(--rx)) rotateY(var(--ry));
   box-shadow:
@@ -182,7 +197,11 @@
   outline-offset: 6px;
 }
 
-/* 중앙 비네트 — 카피 가독성 확보 */
+/* 중앙 비네트 — 카피 가독성 확보.
+   색은 --dark-intro(#0B0D10)와 같은 RGB 여야 한다. 다른 검정을 겹치면
+   비네트가 끝나는 자리에 색 띠가 생긴다.
+   C3 로 오면서 중앙을 0.96 → 0.9 로 살짝 열었다. 별자리 그물이 카피 뒤로도
+   이어져 보여야 배경이 '그물'로 읽히기 때문이고, 카피는 아래 그림자로 버틴다. */
 .vignette {
   position: absolute;
   inset: 0;
@@ -190,10 +209,10 @@
   pointer-events: none;
   background: radial-gradient(
     52% 44% at 50% 46%,
-    rgba(4, 5, 10, 0.96) 0%,
-    rgba(4, 5, 10, 0.86) 40%,
-    rgba(4, 5, 10, 0.42) 66%,
-    rgba(4, 5, 10, 0) 88%
+    rgba(11, 13, 16, 0.9) 0%,
+    rgba(11, 13, 16, 0.8) 40%,
+    rgba(11, 13, 16, 0.4) 66%,
+    rgba(11, 13, 16, 0) 88%
   );
   transition: opacity var(--t-overlay);
 }
@@ -208,7 +227,7 @@
   height: 120px;
   z-index: 2;
   pointer-events: none;
-  background: linear-gradient(to bottom, rgba(4, 5, 10, 0), rgba(4, 5, 10, 0.85));
+  background: linear-gradient(to bottom, rgba(11, 13, 16, 0), rgba(11, 13, 16, 0.85));
 }
 
 .copy {
@@ -247,37 +266,76 @@
   overflow-wrap: break-word;
 }
 
+/* 아이브로우 — 작게, 트래킹을 풀고, 양옆에 가는 선. 헤드라인 위 가로축 역할. */
 .eyebrow {
-  font-size: 1rem;
-  font-weight: 700;
-  letter-spacing: var(--ls-body);
-  color: rgba(255, 255, 255, 0.6);
-  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: var(--ls-label);
+  color: var(--on-dark-mute);
+  margin-bottom: 30px;
   opacity: 0;
   animation: up 0.9s 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+.rule {
+  width: 40px;
+  height: 1px;
+  background: var(--on-dark-line-strong);
+}
+
+/* 서체는 그대로 Pretendard 다. 바꾼 것은 짜임 — 두 줄이 같은 크기를 유지하고
+   **굵기와 밝기**로만 갈린다(C3). 앞줄 300, 뒷줄 800 + 그라디언트.
+   h1 은 크기·자간만 잡고 색은 각 줄이 가진다. */
 .headline {
-  font-size: clamp(2.3rem, 5.2vw, 4.1rem);
-  line-height: 1.2;
-  font-weight: 800;
-  letter-spacing: var(--ls-title);
-  /* 강조는 색이 아니라 밝기 차이로 준다 — 기본은 옅게, 강조어만 순백 */
-  color: var(--on-dark-dim);
-  margin-bottom: 22px;
-  text-shadow: 0 6px 40px rgba(0, 0, 0, 0.8);
+  margin-bottom: 30px;
+  max-width: 920px;
+  margin-inline: auto;
+  font-size: clamp(2.1rem, 5.2vw, 4rem);
+  line-height: 1.16;
+  letter-spacing: var(--ls-display);
+  font-weight: 300;
+  text-wrap: pretty;
   opacity: 0;
   animation: up 1s 0.42s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
-.em {
-  color: var(--on-dark);
+
+/* 리드인: 같은 크기, 가는 굵기, 한 단계 옅은 밝기 */
+.headlineLead {
+  display: block;
+  font-weight: 300;
+  color: var(--on-dark-dim);
+  /* 그림자는 이 줄에만 건다. 아래 그라디언트 줄은 글자가 투명이라
+     text-shadow 가 글자 뒤가 아니라 글자 '자리'에 얼룩으로 찍힌다. */
+  text-shadow: 0 6px 40px rgba(0, 0, 0, 0.8);
+}
+
+/* 주장: 굵게. 강조는 색이 아니라 '위에서 아래로 빠지는 밝기'로 준다 —
+   순백에서 시작해 회청색으로 떨어지며 글자에 입체가 생긴다. */
+.headlineMain {
+  display: block;
+  font-weight: 800;
+  background: linear-gradient(
+    104deg,
+    #ffffff 0%,
+    var(--blue-50) 38%,
+    var(--gray-300) 72%,
+    var(--gray-400) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .lead {
-  font-size: clamp(1.02rem, 1.5vw, 1.22rem);
-  color: var(--on-dark-sub);
+  font-size: clamp(0.98rem, 1.4vw, 1.06rem);
+  color: var(--on-dark-mute);
   line-height: 1.75;
-  max-width: 640px;
+  max-width: 620px;
   margin: 0 auto;
   text-shadow: 0 3px 22px rgba(0, 0, 0, 0.85);
   opacity: 0;
@@ -343,18 +401,30 @@
   .lead {
     max-width: 520px;
   }
-  /* 좁은 화면에서는 vw 기반 상한이 너무 커 헤드라인이 네 줄로 무너진다 */
+  /* 좁은 화면에서는 vw 기반 상한이 너무 커 헤드라인이 다섯 줄로 무너진다 */
   .headline {
-    font-size: clamp(1.85rem, 7.4vw, 2.6rem);
+    font-size: clamp(1.7rem, 7.2vw, 2.5rem);
+    /* 작은 크기에서 -0.055em 은 800 굵기와 겹쳐 글자가 붙어 보인다 — 한 단계 되돌린다 */
+    letter-spacing: var(--ls-title);
+    line-height: 1.2;
+    margin-bottom: 22px;
+  }
+  .eyebrow {
+    gap: 12px;
+    font-size: 0.76rem;
+    margin-bottom: 22px;
+  }
+  .rule {
+    width: 26px;
   }
   /* 좁은 화면은 카피가 폭을 다 써서 뒤가 조금만 밝아도 글자가 죽는다 — 더 깊게 덮는다 */
   .vignette {
     background: radial-gradient(
       96% 42% at 50% 47%,
-      rgba(4, 5, 10, 0.985) 0%,
-      rgba(4, 5, 10, 0.94) 42%,
-      rgba(4, 5, 10, 0.6) 68%,
-      rgba(4, 5, 10, 0) 92%
+      rgba(11, 13, 16, 0.985) 0%,
+      rgba(11, 13, 16, 0.94) 42%,
+      rgba(11, 13, 16, 0.6) 68%,
+      rgba(11, 13, 16, 0) 92%
     );
   }
   /* 커서가 없어 성단이 깨어날 일이 없다 — 이름을 늘 읽히게 둔다 */

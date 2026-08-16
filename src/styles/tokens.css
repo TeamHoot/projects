@@ -2,57 +2,89 @@
  * 디자인 토큰 — 유일한 원본은 docs/plans/DESIGN_SYSTEM.md.
  * 값을 바꿀 때는 그 문서를 먼저 고치고 여기에 옮긴다.
  * CLAUDE.md §1: 컴포넌트에서 하드코딩 hex 금지 — 반드시 이 변수를 참조한다.
+ *
+ * 2026-08-16 — 팔레트를 C3 히어로 시안의 **코발트 단일 브랜드 체계**로 교체했다.
+ * 원칙은 하나: 브랜드색은 코발트 블루 딱 하나, 나머지는 전부 '푸른 기가 도는' 중성 회색.
+ * 로고에서 뽑았던 #2856c4/#6094ff 체계를 대체한다 (근거는 DESIGN_SYSTEM §1).
  */
 
 :root {
+  /* ── 코발트 램프 — 유일한 브랜드 색 ── */
+  --blue-50: #ebf1ff;
+  --blue-100: #d6e4ff;
+  --blue-200: #adc7ff;
+  --blue-300: #7da4ff;
+  --blue-400: #3d79ff;
+  --blue-500: #004fff; /* 시그니처 */
+  --blue-600: #0043db;
+  --blue-700: #0035ad;
+  --blue-800: #002676;
+
+  /* ── 쿨 그레이 램프 — 유일한 보조색 ── */
+  --gray-50: #f7f8fa;
+  --gray-100: #eef1f6;
+  --gray-200: #e2e6ee;
+  --gray-300: #cdd3df;
+  --gray-400: #9ba3b2;
+  --gray-500: #6b7484;
+  --gray-600: #4b5361;
+  --gray-700: #333a45;
+  --gray-800: #1f242c;
+  --gray-900: #12151a;
+  --gray-950: #0b0d10; /* 가장 깊은 값 — 히어로 바닥 */
+
   /* ── 배경 3단 ── */
-  --bg: #ffffff;      /* 기본 섹션 */
-  --bg-soft: #f5f7fa; /* 교차 밴드 — 인접 섹션과 번갈아 깔아 리듬을 만든다 */
-  --bg-soft2: #eef1f6;/* 카드 내부 / 이미지 placeholder / 푸터 */
+  --bg: #ffffff;           /* 기본 섹션 */
+  --bg-soft: var(--gray-50);   /* 교차 밴드 — 인접 섹션과 번갈아 깔아 리듬을 만든다 */
+  --bg-soft2: var(--gray-100); /* 카드 내부 / 이미지 placeholder / 푸터 */
 
   /* ── 텍스트 3단 ──
      위계는 '색'이 아니라 '크기·굵기'로 준다. 설명문을 회색으로 깔면
      어디서 본 듯한 인상이 되므로 '살짝 옅은 검정'을 쓴다. (DESIGN_SYSTEM §2) */
-  --text: #101216;      /* 본문·제목. near-black */
-  --text-sub: #2b2f36;  /* 설명문 */
-  --text-mute: #5a6068; /* 캡션·메타 */
+  --text: var(--gray-900);      /* 본문·제목. near-black */
+  --text-sub: var(--gray-700);  /* 설명문 */
+  --text-mute: var(--gray-600); /* 캡션·메타. 흰 바탕 7.75:1 */
 
-  --line: #e6e9ef;      /* 모든 구분선·카드 테두리 */
+  --line: var(--gray-200);      /* 모든 구분선·카드 테두리 */
 
-  /* ── 브랜드 (OPEN[D2] 해소 2026-08-15 — HOOT 로고 teamhootlogo.png 실측) ──
-     로고는 차콜(#45484b) · 블루(#6094ff) · 흰 원 세 개가 겹치는 형태이고,
-     모든 색의 색상(Hue)이 210~220 에 묶여 있다. 회색조차 중성이 아니라 푸른 기가 돈다.
-
-     로고 메인 블루 #6094ff 를 --accent 로 쓸 수 없다: 흰 글씨 대비가 2.93:1 로
-     WCAG AA 를 큰 글씨 기준으로도 통과하지 못한다(버튼 배경 불가).
-     → 같은 H220 을 유지한 채 명도만 낮춘 형제색을 accent 로 쓰고,
-       로고 원본 블루는 --point 로 살려 다크 밴드 위·미세 요소에 쓴다. */
-  --accent: #2856c4;       /* 1차 CTA · 링크 · 활성 밑줄. 흰 글씨 6.52:1 (AA 통과) */
-  --point: #6094ff;        /* 로고 원본 블루. 다크 밴드 위 강조 + 점·바 같은 미세 요소.
-                              흰 바탕 위 본문색으로는 절대 쓰지 않는다 (2.93:1) */
+  /* ── 브랜드 ──
+     accent 하나로 CTA·링크·활성 상태를 전부 처리한다. 흰 글씨 대비 5.90:1 로 AA 통과.
+     point 는 '다크 위 전용' 밝은 형제색이다. 흰 바탕 대비 3.90:1 이라
+     라이트 배경의 본문·링크 색으로는 절대 쓰지 않는다 — 이 규칙은 팔레트가 바뀌어도 같다. */
+  --accent: var(--blue-500);
+  --accent-hover: var(--blue-600);
+  --point: var(--blue-400); /* 다크 밴드 위 강조 + 점·바 같은 미세 요소. #0B0D10 위 4.95:1 */
+  --accent-tint: rgba(0, 79, 255, 0.14); /* 다크 위 옅은 브랜드 면 */
+  /* 다크 위 광원용 한 쌍. 끝점을 `transparent` 로 두면 엔진에 따라 회색을 거쳐
+     번지므로 같은 RGB 의 알파 0 을 명시한다. */
+  --accent-glow: rgba(0, 79, 255, 0.22);
+  --accent-glow-0: rgba(0, 79, 255, 0);
 
   --on-accent: #ffffff;
 
   /* ── 다크 밴드 (섹션 반전용) ──
      전면 다크가 아니라 특정 섹션만 뒤집어 강조한다. */
-  --dark-band: #2b374b;   /* 로고의 차콜×블루 겹침 색. 다크 섹션의 기본값 —
-                             브랜드에 실재하는 색이라 다른 다크값보다 이걸 먼저 쓴다 */
-  --dark-intro: #04050a;  /* 최상단 풀스크린 히어로 */
-  --dark-qa: #111726;     /* 검수/품질 섹션 */
-  --dark-review: #141821; /* 고객후기 섹션 */
-  --dark-quote: #14161d;  /* 대표 메시지 카드 */
-  --dark-menu: #0b0f16;   /* 모바일 전체화면 메뉴 */
+  --dark-band: #14171c;   /* 다크 섹션의 기본값 */
+  --dark-intro: var(--gray-950); /* 최상단 풀스크린 히어로 */
+  --dark-qa: var(--gray-900);    /* 검수/품질 섹션 */
+  --dark-review: #14171c; /* 고객후기 섹션 */
+  --dark-quote: #1c2027;  /* 대표 메시지 카드 */
+  --dark-menu: var(--gray-950); /* 모바일 전체화면 메뉴 */
   --on-dark: #ffffff;
-  --on-dark-sub: #c9d2e2;
+  --on-dark-sub: #c3c9d4;
   /* 다크 위 강조는 '색'이 아니라 '밝기 차이'로 준다 (DESIGN_SYSTEM §2) */
   --on-dark-dim: rgba(255, 255, 255, 0.74);
+  --on-dark-mute: var(--gray-400); /* 다크 위 캡션·부제. #0B0D10 위 6.17:1 */
+  /* 다크 위 헤어라인 — 선을 회색 hex 로 깔면 배경 밝기가 바뀔 때마다 어긋난다 */
+  --on-dark-line: rgba(255, 255, 255, 0.09);
+  --on-dark-line-strong: rgba(255, 255, 255, 0.16);
 
   /* ── 그림자 ── */
   --shadow: 0 10px 40px rgba(20, 24, 40, 0.08);
   --shadow-sm: 0 4px 18px rgba(20, 24, 40, 0.06);
-  /* 그림자 색은 --accent 의 RGB 와 같아야 버튼이 '떠 있는' 느낌이 난다 (40,86,196 = #2856c4) */
-  --shadow-accent: 0 10px 28px rgba(40, 86, 196, 0.32);
-  --shadow-accent-hover: 0 16px 36px rgba(40, 86, 196, 0.44);
+  /* 그림자 색은 --accent 의 RGB 와 같아야 버튼이 '떠 있는' 느낌이 난다 (0,79,255 = #004FFF) */
+  --shadow-accent: 0 10px 28px rgba(0, 79, 255, 0.32);
+  --shadow-accent-hover: 0 16px 36px rgba(0, 79, 255, 0.44);
 
   /* ── 라운드 ──
      카드는 14px, 버튼은 0. 각진 버튼이 이 룩앤필의 시그니처다. */
@@ -71,12 +103,16 @@
   /* ── 타이포 ── */
   --font-sans: 'Pretendard Variable', 'Pretendard', -apple-system,
     BlinkMacSystemFont, 'Segoe UI', 'Malgun Gothic', sans-serif;
+  /* 라틴 전용 기술 라벨(버전·연도·코드)용. 한글에는 쓰지 않는다 —
+     모노 폰트에 한글 글리프가 없어 한 줄 안에서 서체가 갈린다. */
+  --font-mono: ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, monospace;
 
   /* 글자가 커질수록 자간을 조인다. 이게 인상의 절반이다. (DESIGN_SYSTEM §2) */
   --ls-body: -0.01em;
   --ls-sub: -0.03em;
   --ls-title: -0.045em;
-  --ls-display: -0.05em;
+  --ls-display: -0.055em;
+  --ls-label: 0.12em; /* 히어로 아이브로우 같은 소형 트래킹 라벨 */
 
   /* ── 모션 ──
      호버 관용구는 단 하나: translateY(-2px) + 그림자 강화. */

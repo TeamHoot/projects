@@ -47,6 +47,73 @@ const NARROW_SLOTS = [
   { x: 0.0, y: 0.45 },
 ] as const
 
+/* ───── 배경 별자리 필드 (C3 시안) ───── */
+
+/** 넓은 화면의 별 개수. 그물 판정이 O(n²)이라 늘리면 프레임이 바로 무거워진다. */
+const STAR_COUNT = 78
+/** 별끼리 선으로 이어지기 시작하는 거리(px) */
+const LINK_DIST = 170
+/** 커서가 별을 끌어당기는(선으로 잇는) 반경(px) */
+const CURSOR_DIST = 265
+/** 미리 이어 둘 성좌 개수와 성좌 하나의 최대 꼭짓점 수 */
+const FIGURE_COUNT = 3
+const FIGURE_MAX_POINTS = 5
+
+type Star = {
+  x: number
+  y: number
+  /** 반지름 */
+  r: number
+  /** 시차 계수 — 클수록 커서를 크게 따라간다(앞쪽 별) */
+  depth: number
+  alpha: number
+  /** 반짝임 위상·속도 */
+  phase: number
+  speed: number
+  vx: number
+  vy: number
+  /** 일부만 푸른 별로 — 전부 흰색이면 화면이 죽는다 */
+  blue: boolean
+}
+
+/** 화면 밖으로 나간 별을 반대편으로 되돌린다. */
+function wrap(v: number, max: number) {
+  if (v < 0) return max
+  if (v > max) return 0
+  return v
+}
+
+/**
+ * 가장 가까운 이웃을 따라가며 성좌 경로를 만든다.
+ * 매 프레임 최근접 탐색을 하면 별이 흐르는 동안 선이 튀므로 한 번만 굳혀 둔다.
+ */
+function buildFigures(stars: Star[]): number[][] {
+  const figures: number[][] = []
+  for (let f = 0; f < FIGURE_COUNT; f++) {
+    const path = [Math.floor(Math.random() * stars.length)]
+    const points = 4 + Math.floor(Math.random() * (FIGURE_MAX_POINTS - 3))
+    while (path.length < points) {
+      const last = stars[path[path.length - 1] ?? 0]
+      if (!last) break
+      let best = -1
+      let bestDist = Infinity
+      for (let i = 0; i < stars.length; i++) {
+        const s = stars[i]
+        if (!s || path.includes(i)) continue
+        const d = (s.x - last.x) ** 2 + (s.y - last.y) ** 2
+        if (d < bestDist) {
+          bestDist = d
+          best = i
+        }
+      }
+      if (best < 0) break
+      path.push(best)
+    }
+    figures.push(path)
+  }
+  return figures
+}
+
 
 type Placed = {
   slug: string
@@ -390,7 +457,10 @@ export default function Intro({ nextSectionId }: IntroProps) {
     }
   }, [warped, closeProject])
 
-  // ── 별 필드 ──
+  // ── 별자리 필드 ──
+  // C3 시안의 배경. 예전에는 중심에서 뻗어 나오는 워프 필드였는데,
+  // 성단(프로젝트 패널)도 같은 중심에서 원근으로 퍼져 있어 두 원근이 싸웠다.
+  // 지금은 정적인 별 사이를 선으로 잇는 성좌 그물이라 성단과 층이 겹치지 않는다.
   useEffect(() => {
     const canvas = canvasRef.current
     const section = sectionRef.current
@@ -403,9 +473,19 @@ export default function Intro({ nextSectionId }: IntroProps) {
     const dpr = Math.min(window.devicePixelRatio || 1, 2)
     let w = 0
     let h = 0
-    let stars: { a: number; r: number; s: number; z: number }[] = []
+    let stars: Star[] = []
+    /** 미리 이어 둔 성좌 — 매 프레임 이웃을 다시 찾지 않도록 별 인덱스 경로로 굳혀 둔다. */
+    let figures: number[][] = []
     let raf = 0
     let live = true
+    let t = 0
+    // 커서 위치와, 그 커서를 따라 그물 전체가 느리게 흘러가는 시차(parallax) 오프셋
+    let mx = -1e4
+    let my = -1e4
+    let targetX = 0
+    let targetY = 0
+    let offX = 0
+    let offY = 0
 
     const build = () => {
       w = section.clientWidth
@@ -413,41 +493,125 @@ export default function Intro({ nextSectionId }: IntroProps) {
       canvas.width = w * dpr
       canvas.height = h * dpr
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
-      const n = Math.round(Math.min(220, (w * h) / 9000))
-      stars = Array.from({ length: n }, () => ({
-        a: Math.random() * Math.PI * 2,
-        r: Math.random() * Math.max(w, h) * 0.62,
-        s: 0.06 + Math.random() * 0.24,
-        z: Math.random(),
-      }))
+      // 좁은 화면은 별 하나가 차지하는 각이 커서 같은 수를 뿌리면 지저분하다.
+      const n = w < MOBILE_BREAKPOINT ? 44 : STAR_COUNT
+      stars = Array.from({ length: n }, () => {
+        const depth = Math.random()
+        return {
+          x: Math.random() * w,
+          y: Math.random() * h,
+          r: 0.6 + depth * 1.5,
+          depth: 0.3 + depth * 0.7,
+          alpha: 0.18 + Math.random() * 0.4,
+          phase: Math.random() * Math.PI * 2,
+          speed: 0.15 + Math.random() * 0.35,
+          vx: (Math.random() - 0.5) * 0.05,
+          vy: (Math.random() - 0.5) * 0.05,
+          blue: Math.random() < 0.18,
+        }
+      })
+      figures = buildFigures(stars)
     }
 
     const draw = () => {
       if (!live) return
+      t += 0.016
       ctx.clearRect(0, 0, w, h)
-      const cx = w / 2
-      const cy = h * 0.46
-      for (const st of stars) {
-        // z 가 클수록 빠르고 크고 밝다 — 이 차이가 원근감을 만든다.
-        st.r += st.s * (0.4 + st.z * 1.6)
-        if (st.r > Math.max(w, h) * 0.75) {
-          st.r = Math.random() * 40
-          st.a = Math.random() * Math.PI * 2
+      offX += (targetX - offX) * 0.06
+      offY += (targetY - offY) * 0.06
+
+      // 별을 흘리고, 시차를 얹은 '그려질 좌표'를 먼저 다 구한다.
+      const pts = stars.map((st) => {
+        st.x = wrap(st.x + st.vx, w)
+        st.y = wrap(st.y + st.vy, h)
+        return {
+          x: st.x + offX * st.depth,
+          y: st.y + offY * st.depth,
+          r: st.r,
+          star: st,
+          twinkle: 0.65 + 0.35 * Math.sin(t * st.speed + st.phase),
         }
-        const x = cx + Math.cos(st.a) * st.r
-        const y = cy + Math.sin(st.a) * st.r * 0.82
-        const size = 0.5 + st.z * 1.5
-        const op = 0.14 + st.z * 0.55
-        ctx.fillStyle = `rgba(${190 + Math.round(st.z * 60)},${210 + Math.round(st.z * 45)},255,${op})`
-        ctx.fillRect(x, y, size, size)
+      })
+
+      // 가까운 별끼리 잇는 그물
+      ctx.lineWidth = 1
+      for (let i = 0; i < pts.length; i++) {
+        for (let j = i + 1; j < pts.length; j++) {
+          const a = pts[i]
+          const b = pts[j]
+          if (!a || !b) continue
+          const d = Math.hypot(a.x - b.x, a.y - b.y)
+          if (d >= LINK_DIST) continue
+          ctx.strokeStyle = `rgba(255,255,255,${0.115 * (1 - d / LINK_DIST)})`
+          ctx.beginPath()
+          ctx.moveTo(a.x, a.y)
+          ctx.lineTo(b.x, b.y)
+          ctx.stroke()
+        }
       }
+
+      // 굳혀 둔 성좌 — 그물보다 조금 더 밝고 푸르게 그어 형태가 읽히게 한다
+      ctx.strokeStyle = 'rgba(190,208,255,.19)'
+      for (const path of figures) {
+        ctx.beginPath()
+        path.forEach((idx, n) => {
+          const p = pts[idx]
+          if (!p) return
+          if (n === 0) ctx.moveTo(p.x, p.y)
+          else ctx.lineTo(p.x, p.y)
+        })
+        ctx.stroke()
+      }
+
+      // 커서 주변의 별은 커서와 이어지며 함께 밝아진다 — 이 반응이 C3 의 핵심이다
+      if (mx > -9000) {
+        for (const p of pts) {
+          const d = Math.hypot(p.x - mx, p.y - my)
+          if (d >= CURSOR_DIST) continue
+          const near = 1 - d / CURSOR_DIST
+          ctx.strokeStyle = `rgba(140,175,255,${0.5 * near})`
+          ctx.beginPath()
+          ctx.moveTo(p.x, p.y)
+          ctx.lineTo(mx, my)
+          ctx.stroke()
+          p.twinkle += near * 1.1
+          p.r += near * 0.7
+        }
+      }
+
+      for (const p of pts) {
+        const a = Math.min(1, p.star.alpha * p.twinkle)
+        ctx.fillStyle = p.star.blue
+          ? `rgba(160,190,255,${a})`
+          : `rgba(255,255,255,${a})`
+        ctx.beginPath()
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2)
+        ctx.fill()
+      }
+
       raf = requestAnimationFrame(draw)
+    }
+
+    const onMove = (e: PointerEvent) => {
+      const r = section.getBoundingClientRect()
+      mx = e.clientX - r.left
+      my = e.clientY - r.top
+      targetX = (mx / r.width - 0.5) * 26
+      targetY = (my / r.height - 0.5) * 18
+    }
+    const onLeave = () => {
+      mx = -1e4
+      my = -1e4
+      targetX = 0
+      targetY = 0
     }
 
     build()
     draw()
     const onResize = () => build()
     window.addEventListener('resize', onResize)
+    section.addEventListener('pointermove', onMove)
+    section.addEventListener('pointerleave', onLeave)
 
     const io = new IntersectionObserver(
       (entries) =>
@@ -470,6 +634,8 @@ export default function Intro({ nextSectionId }: IntroProps) {
       live = false
       cancelAnimationFrame(raf)
       window.removeEventListener('resize', onResize)
+      section.removeEventListener('pointermove', onMove)
+      section.removeEventListener('pointerleave', onLeave)
       io.disconnect()
     }
   }, [])
@@ -489,6 +655,8 @@ export default function Intro({ nextSectionId }: IntroProps) {
       ref={sectionRef}
       id="intro"
     >
+      {/* 위쪽에서 내려오는 코발트 광원. 별자리 필드보다 아래에 깔아 그물이 그 위에 뜨게 한다. */}
+      <div className={styles.glow} aria-hidden="true" />
       <canvas className={styles.stars} ref={canvasRef} aria-hidden="true" />
 
       <div className={styles.warp} style={{ transform: warpTransform }}>
@@ -577,13 +745,21 @@ export default function Intro({ nextSectionId }: IntroProps) {
       <div className={styles.vignette} aria-hidden="true" />
 
       <div className={styles.copy} ref={copyRef}>
-        <p className={styles.eyebrow}>설계 26년차 리드 · 전담 QA 보유</p>
+        {/* 아이브로우는 양옆 가는 선 사이에 놓는다 — 헤드라인 위에 가로축을 하나 그어
+            시선을 가운데로 모으는 C3 시안의 장치다. */}
+        <p className={styles.eyebrow}>
+          <span className={styles.rule} aria-hidden="true" />
+          설계 26년차 리드 · 전담 QA 보유
+          <span className={styles.rule} aria-hidden="true" />
+        </p>
         {/* 주어는 '실력 있는 팀'이고 AI 는 그 팀이 쓰는 도구다. 순서를 뒤집으면
             AI 로 찍어내는 팀처럼 읽힌다. 각 줄은 레퍼런스와 같은 13~17자로 맞춘다. */}
+        {/* 두 줄은 '무엇을' → '누가'의 위계다. 예전에는 크기 차이로 줬는데,
+            C3 는 같은 크기를 유지한 채 **굵기와 밝기**로만 가른다 —
+            앞줄은 가늘고 옅게, 뒷줄은 굵고 위에서 아래로 밝기가 빠지는 그라디언트로. */}
         <h1 className={styles.headline}>
-          웹 · 앱 · 업무 시스템
-          <br />
-          실력 위에 AI를 더한 <span className={styles.em}>개발팀</span>입니다
+          <span className={styles.headlineLead}>웹 · 앱 · 업무 시스템</span>
+          <span className={styles.headlineMain}>실력 위에 AI를 더한 개발팀입니다</span>
         </h1>
         <p className={styles.lead}>
           기획의 첫 줄부터 사용자의 마지막 터치까지 오래 손발 맞춘 팀이 맡습니다. 반복은

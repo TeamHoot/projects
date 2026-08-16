@@ -17,7 +17,9 @@
   max-height: 82vh;
   overflow-y: auto;
   padding: 38px 40px 30px;
-  background: rgba(10, 13, 20, 0.82);
+  /* RGB 는 --dark-intro(#0B0D10)와 같아야 한다. 다른 검정을 반투명으로 얹으면
+     히어로 위에서 패널만 색이 다른 검정으로 뜬다. */
+  background: rgba(11, 13, 16, 0.82);
   backdrop-filter: saturate(160%) blur(18px);
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: var(--radius-card);
